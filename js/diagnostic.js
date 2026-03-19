@@ -264,31 +264,126 @@ function getProfile(total) {
   return { name: "CIMIENTOS SÓLIDOS", class: "solid" };
 }
 
-function getNarrative(profile) {
-  const narratives = {
-    absent: [
-      "Tu empresa funciona. Pero funciona porque vos la empujás todos los días.",
-      "Los problemas vuelven porque el sistema los produce. Los cambios no pegan porque los incentivos reales no cambiaron. Tu equipo no decide porque equivocarse sale caro. La información llega después, no antes.",
-      "No es falta de esfuerzo. Es que los cimientos no están construidos. Y empujar más fuerte no los construye.",
-      "Hay 10 mecanismos que hacen próspera a una empresa. La mayoría no están operando en la tuya. Pero cada uno se puede construir — cuando sabés cuál y en qué orden."
-    ],
-    partial: [
-      "Estás en el punto más difícil: ves que hay otra forma pero no lográs que los cambios se sostengan.",
-      "Algunos cimientos existen. Pero los que faltan anulan a los que están. Si tu equipo puede decidir pero la información llega tarde, la decisión es mala. Si la compensación no conecta con lo que cada persona controla, el mejor proceso no cambia el comportamiento.",
-      "La prosperidad no viene de resolver todo a la vez — viene de identificar cuáles cimientos faltan y en qué orden construirlos."
-    ],
-    building: [
-      "Tu empresa tiene bases reales. La pregunta ahora es: ¿dónde está el valor que estás dejando sobre la mesa?",
-      "Los cimientos principales funcionan. Pero hay mecanismos específicos que no están operando — y cada uno tiene un costo que no estás viendo. Decisiones que podrían delegarse. Información que existe pero no llega al momento de decidir. Capacidad liberada que se consume en más tarea.",
-      "La diferencia entre una empresa buena y una que prospera no es más esfuerzo — es saber qué mover y qué dejar de hacer."
-    ],
-    solid: [
-      "Tu empresa prospera por diseño, no por esfuerzo. Eso es raro.",
-      "Los mecanismos que producen prosperidad están operando. Tu gente decide, tu sistema aprende, tu operación corre sin depender de una persona.",
-      "Si querés comprimir tiempos con IA, explorar nuevos modelos, o escalar sin agregar complejidad — eso sí es conversación."
-    ]
+function getNarrative(profileClass, indicatorScores, answers) {
+  // Find weakest and strongest indicators
+  const sorted = INDICATOR_LABELS.map(l => ({ label: l, score: indicatorScores[l] }))
+    .sort((a, b) => a.score - b.score);
+  const weakest = sorted[0];
+  const secondWeakest = sorted[1];
+  const strongest = sorted[sorted.length - 1];
+
+  // Find weakest mechanisms (questions with lowest scores)
+  const mechWeak = answers
+    .map((score, i) => ({ index: i, score, name: PALANCA_DESCRIPTIONS[i].name }))
+    .sort((a, b) => a.score - b.score);
+  const weakMech1 = mechWeak[0];
+  const weakMech2 = mechWeak[1];
+
+  // Weakness-specific sentences
+  const weaknessPhrases = {
+    "Diferenciación defendible": "Lo que te diferencia no está protegido. Si mañana un competidor copia lo que hacés, ¿qué te queda?",
+    "Margen": "Tu margen se está comprimiendo — y la causa probablemente no está donde creés. La estructura importa más que el esfuerzo.",
+    "Clientes que vuelven": "Tu empresa no está capturando aprendizaje de lo que funciona y lo que no. Sin eso, cada cliente es como el primero.",
+    "Talento que quiere estar": "Tu mejor gente no ve la conexión entre lo que hace y el resultado. Eso no se resuelve con bonos — se resuelve con visibilidad.",
+    "Capacidad de invertir": "La energía de tu empresa se gasta en mantener, no en mejorar. Sin capacidad de invertir, no hay evolución posible.",
+    "Resiliencia": "Tu empresa es frágil. Un shock — un cliente que se va, una persona clave que renuncia, un cambio regulatorio — y todo se desestabiliza.",
+    "Opcionalidad": "Estás atrapado en lo que ya hacés. Sin holgura ni experimentación, no podés elegir hacia dónde ir."
   };
-  return narratives[profile] || narratives.absent;
+
+  // Strength acknowledgment
+  const strengthPhrases = {
+    "Diferenciación defendible": "tenés algo que otros no pueden copiar fácil",
+    "Margen": "tu estructura de captura funciona",
+    "Clientes que vuelven": "tus clientes vuelven — eso es señal real",
+    "Talento que quiere estar": "tu gente quiere estar — eso es la base",
+    "Capacidad de invertir": "generás capacidad para mejorar",
+    "Resiliencia": "podés absorber golpes sin colapsar",
+    "Opcionalidad": "tenés espacio para elegir"
+  };
+
+  // Mechanism-specific observations
+  const mechPhrases = {
+    0: "Las decisiones pasan por demasiadas manos antes de ejecutarse.",
+    1: "La información existe pero no llega al momento de decidir.",
+    2: "Demasiada energía se gasta coordinando y corrigiendo.",
+    3: "Equivocarse sale caro — entonces nadie decide.",
+    4: "Los cambios no se sostienen porque los incentivos no cambiaron.",
+    5: "Tu gente no ve el impacto de lo que hace en el resultado.",
+    6: "No hay espacio para pensar — todo es urgente.",
+    7: "La innovación compite con la operación y siempre pierde.",
+    8: "La tecnología no está cambiando cómo se decide.",
+    9: "El aprendizaje se va con las personas — no queda en el sistema."
+  };
+
+  // Build dynamic narrative — unique per person's specific weak/strong combination
+  const paragraphs = [];
+  const total = answers.reduce((a, b) => a + b, 0);
+
+  // --- PARAGRAPH 1: Opening (profile + strongest indicator) ---
+  if (profileClass === "absent") {
+    paragraphs.push("Tu empresa funciona. Pero funciona porque vos la empujás todos los días.");
+  } else if (profileClass === "partial") {
+    const openings = {
+      "Diferenciación defendible": "Tu empresa tiene algo propio — algo que otros no copian fácil. Pero eso solo no alcanza.",
+      "Margen": "Tu estructura captura valor. No es poco. Pero los cimientos que lo sostienen son frágiles.",
+      "Clientes que vuelven": "Tus clientes vuelven — y eso es la señal más difícil de fabricar. Pero hay mecanismos que la están debilitando.",
+      "Talento que quiere estar": "Tu gente quiere estar. Eso es raro y valioso. Pero hay cosas que anulan esa ventaja.",
+      "Capacidad de invertir": "Generás espacio para mejorar. Eso te pone adelante. Pero ese espacio se desperdicia si los mecanismos base no funcionan.",
+      "Resiliencia": "Tu empresa aguanta golpes. Eso es una base real. Pero resistir no es lo mismo que prosperar.",
+      "Opcionalidad": "Tenés espacio para elegir — y eso vale más de lo que parece. Pero las opciones no sirven si los cimientos no las sostienen."
+    };
+    paragraphs.push(openings[strongest.label]);
+  } else if (profileClass === "building") {
+    paragraphs.push(`Tu empresa tiene bases reales — ${strengthPhrases[strongest.label]}. La pregunta ya no es si funciona, sino dónde está el valor que dejás sobre la mesa.`);
+  } else {
+    paragraphs.push("Tu empresa prospera por diseño, no por esfuerzo. Eso es raro — y no es casualidad.");
+  }
+
+  // --- PARAGRAPH 2: Specific weakness diagnosis (indicator + mechanisms) ---
+  if (profileClass === "absent") {
+    paragraphs.push(`${mechPhrases[weakMech1.index]} ${mechPhrases[weakMech2.index]} No es falta de esfuerzo — es que los cimientos no están construidos.`);
+  } else if (profileClass === "partial") {
+    paragraphs.push(`${weaknessPhrases[weakest.label]} Y a nivel operativo: ${mechPhrases[weakMech1.index].toLowerCase()}`);
+  } else if (profileClass === "building") {
+    paragraphs.push(`${weaknessPhrases[weakest.label]}`);
+    if (secondWeakest.score < 50) {
+      paragraphs.push(`${weaknessPhrases[secondWeakest.label]}`);
+    }
+  } else {
+    const weakAreas = sorted.filter(s => s.score < 67);
+    if (weakAreas.length > 0) {
+      paragraphs.push(`Donde queda espacio: ${weaknessPhrases[weakAreas[0].label].toLowerCase()}`);
+    } else {
+      paragraphs.push(`Los mecanismos principales están operando. ${strongest.score === 100 ? "Y en " + strongest.label.toLowerCase() + " estás al máximo." : "El sistema genera prosperidad de forma sostenida."}`);
+    }
+  }
+
+  // --- PARAGRAPH 3: Mechanism-specific bridge (what connects weakness to action) ---
+  if (profileClass === "absent") {
+    paragraphs.push(`No es un tema de actitud — es estructural. ${mechPhrases[weakMech1.index].replace('.', '')} y ${mechPhrases[weakMech2.index].toLowerCase()} Eso se puede cambiar, pero no empujando más fuerte.`);
+  } else if (profileClass === "partial") {
+    // Pick a mechanism that ISN'T the weakest (to add variety from P2)
+    const thirdMech = mechWeak[2] || mechWeak[1];
+    if (thirdMech.score <= 2) {
+      paragraphs.push(`Hay otro mecanismo que pesa: ${mechPhrases[thirdMech.index].toLowerCase()} Cuando se acumulan, cada uno frena al otro.`);
+    }
+  } else if (profileClass === "building") {
+    paragraphs.push(`El mecanismo más débil: ${mechPhrases[weakMech1.index].toLowerCase()} Resolver eso tiene efecto cascada sobre ${weakest.label.toLowerCase()} y ${secondWeakest.label.toLowerCase()}.`);
+  }
+  // solid: no P3 needed
+
+  // --- PARAGRAPH 4: Closing (profile-specific call to reflection) ---
+  if (profileClass === "absent") {
+    paragraphs.push("Hay 10 mecanismos que hacen próspera a una empresa. La mayoría no están operando en la tuya. Pero cada uno se puede construir — cuando sabés cuál y en qué orden.");
+  } else if (profileClass === "partial") {
+    paragraphs.push("La prosperidad no viene de resolver todo a la vez — viene de identificar cuáles cimientos faltan y en qué orden construirlos. Los tuyos están claros.");
+  } else if (profileClass === "building") {
+    paragraphs.push("La diferencia entre una empresa buena y una que prospera no es más esfuerzo — es saber qué mover y qué dejar de hacer.");
+  } else {
+    paragraphs.push("Si querés comprimir tiempos con IA, explorar nuevos modelos, o escalar sin agregar complejidad — eso sí es conversación.");
+  }
+
+  return paragraphs;
 }
 
 function getTopPalancas(answers) {
@@ -327,7 +422,7 @@ function showResults() {
   const total = answers.reduce((a, b) => a + b, 0);
   const profile = getProfile(total);
   const indicatorScores = calculateIndicatorScores();
-  const narrative = getNarrative(profile.class);
+  const narrative = getNarrative(profile.class, indicatorScores, answers);
   const palancas = getTopPalancas(answers);
 
   // Hide diagnostic, show results
