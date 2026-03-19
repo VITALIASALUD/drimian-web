@@ -160,16 +160,16 @@ const INDICATOR_LABELS = [
 ];
 
 const PALANCA_DESCRIPTIONS = {
-  0: { name: "Ciclos de decisión", text: "Tus decisiones pasan por demasiadas manos. Cada handoff agrega costo, demora y error." },
-  1: { name: "Señal que guía", text: "Tu información llega tarde. Las decisiones se toman sin datos — o con datos viejos." },
-  2: { name: "Fricción", text: "Tu energía se gasta coordinando y corrigiendo. Cada hora que va a eso no va a producir ni a mejorar." },
-  3: { name: "Miedo estructural", text: "En tu empresa equivocarse sale caro. Entonces nadie decide — y eso cuesta más que cualquier error." },
-  4: { name: "Atractores", text: "Los cambios no pegan porque los incentivos reales no cambiaron. El sistema vuelve a donde estaba." },
-  5: { name: "Compensación", text: "Tu gente no ve cómo su trabajo impacta. Sin esa conexión, el esfuerzo se dispersa." },
-  6: { name: "Holgura", text: "Todo es urgente. Sin espacio para pensar, no hay adaptación — solo reacción." },
-  7: { name: "Operación e innovación", text: "Probar algo nuevo rompe lo que funciona. La innovación compite con la operación y siempre pierde." },
-  8: { name: "Delegación a IA", text: "No hay criterio de qué automatizar y qué no. La tecnología no está cambiando cómo se decide." },
-  9: { name: "Aprendizaje del sistema", text: "El aprendizaje depende de personas, no del sistema. Cuando alguien se va, se va lo que sabe." }
+  0: { name: "Ciclos de decisión", text: "Las decisiones recorren varias manos antes de ejecutarse. Cada paso agrega tiempo y ruido — y hay formas concretas de acortarlo." },
+  1: { name: "Señal que guía", text: "La información para decidir existe, pero no llega en el momento correcto. Eso hace que se decida por experiencia en vez de por datos." },
+  2: { name: "Fricción", text: "Una parte importante de la energía se va en coordinar, supervisar y corregir. Esa energía podría ir a producir y mejorar." },
+  3: { name: "Miedo estructural", text: "El costo de equivocarse es alto, y eso frena las decisiones. El sistema puede rediseñarse para que decidir no sea arriesgado." },
+  4: { name: "Atractores", text: "Los cambios tienden a diluirse porque los incentivos reales del sistema no los acompañan. Eso tiene solución estructural." },
+  5: { name: "Compensación", text: "Las personas trabajan sin ver claramente cómo lo que hacen impacta en el resultado. Conectar eso cambia el comportamiento." },
+  6: { name: "Holgura", text: "Todo compite por atención y no queda espacio para observar ni pensar. Sin eso, solo se puede reaccionar." },
+  7: { name: "Operación e innovación", text: "Probar algo nuevo compite con la operación del día a día — y la operación casi siempre gana. Se puede separar sin riesgo." },
+  8: { name: "Delegación a IA", text: "Hay herramientas disponibles que no están cambiando cómo se toman las decisiones. El criterio de qué automatizar aún no está definido." },
+  9: { name: "Aprendizaje del sistema", text: "Lo que se aprende queda en las personas, no en el sistema. Si alguien se va, ese conocimiento se va también." }
 };
 
 // Map question index to which indicators it affects (for palanca impact calc)
@@ -279,108 +279,109 @@ function getNarrative(profileClass, indicatorScores, answers) {
   const weakMech1 = mechWeak[0];
   const weakMech2 = mechWeak[1];
 
-  // Weakness-specific sentences
+  // Weakness-specific sentences — diagnostic tone, not accusatory
   const weaknessPhrases = {
-    "Diferenciación defendible": "Lo que te diferencia no está protegido. Si mañana un competidor copia lo que hacés, ¿qué te queda?",
-    "Margen": "Tu margen se está comprimiendo — y la causa probablemente no está donde creés. La estructura importa más que el esfuerzo.",
-    "Clientes que vuelven": "Lo que tu empresa ofrece no importa lo suficiente como para que vuelvan. Si un cliente se va, preguntate: ¿se fue por precio o porque lo que hacés no le cambió nada?",
-    "Talento que quiere estar": "Tu mejor gente no tiene las condiciones para dar lo mejor de sí — significado, autonomía, desafío o conexión faltan. Eso no se resuelve con bonos.",
-    "Capacidad de invertir": "La energía de tu empresa se gasta en mantener, no en mejorar. Sin capacidad de invertir, no hay evolución posible.",
-    "Resiliencia": "Tu empresa es frágil. Un shock — un cliente que se va, una persona clave que renuncia, un cambio regulatorio — y todo se desestabiliza.",
-    "Opcionalidad": "Estás atrapado en lo que ya hacés. Sin holgura ni experimentación, no podés elegir hacia dónde ir."
+    "Diferenciación defendible": "Lo que te diferencia hoy depende más de esfuerzo que de estructura. Eso funciona — hasta que alguien decide jugar el mismo juego con más recursos.",
+    "Margen": "Hay valor que tu empresa crea pero no captura. La estructura para retener más de ese valor existe — pero no está activada.",
+    "Clientes que vuelven": "Tus clientes eligen quedarse o irse por razones que probablemente no estás midiendo. Hay valor en entender qué los hace volver — y qué los hace dudar.",
+    "Talento que quiere estar": "Tu gente trabaja. La pregunta es si el sistema les da las condiciones para dar lo mejor: ver el impacto de lo que hacen, tener autonomía para decidir, y enfrentar desafíos reales.",
+    "Capacidad de invertir": "La energía va a mantener lo que hay. Queda poco margen para mejorar, explorar o invertir en lo que viene.",
+    "Resiliencia": "Un cambio inesperado — un cliente grande que se va, una persona clave que renuncia, un giro del mercado — tendría más impacto del necesario. Eso se puede diseñar diferente.",
+    "Opcionalidad": "El día a día consume todo. Sin espacio para explorar alternativas, las opciones se van cerrando sin que nadie lo decida."
   };
 
-  // Strength acknowledgment
+  // Strength acknowledgment — validate what works
   const strengthPhrases = {
-    "Diferenciación defendible": "tenés algo que otros no pueden copiar fácil",
-    "Margen": "tu estructura de captura funciona",
-    "Clientes que vuelven": "tus clientes vuelven — eso es señal real",
-    "Talento que quiere estar": "tu gente quiere estar — eso es la base",
-    "Capacidad de invertir": "generás capacidad para mejorar",
-    "Resiliencia": "podés absorber golpes sin colapsar",
-    "Opcionalidad": "tenés espacio para elegir"
+    "Diferenciación defendible": "tenés algo propio que otros no copian fácil — eso es raro",
+    "Margen": "tu estructura captura valor — eso es la base de todo lo demás",
+    "Clientes que vuelven": "tus clientes vuelven — la señal más difícil de fabricar",
+    "Talento que quiere estar": "tu gente quiere estar — y eso se construyó, no pasó solo",
+    "Capacidad de invertir": "generás capacidad para mejorar — la mayoría no puede decir eso",
+    "Resiliencia": "tu empresa absorbe golpes sin perder el rumbo",
+    "Opcionalidad": "tenés espacio para elegir hacia dónde ir"
   };
 
-  // Mechanism-specific observations
+  // Mechanism-specific observations — pattern recognition, not blame
   const mechPhrases = {
-    0: "Las decisiones pasan por demasiadas manos antes de ejecutarse.",
-    1: "La información existe pero no llega al momento de decidir.",
-    2: "Demasiada energía se gasta coordinando y corrigiendo.",
-    3: "Equivocarse sale caro — entonces nadie decide.",
-    4: "Los cambios no se sostienen porque los incentivos no cambiaron.",
-    5: "Tu gente no ve el impacto de lo que hace en el resultado.",
-    6: "No hay espacio para pensar — todo es urgente.",
-    7: "La innovación compite con la operación y siempre pierde.",
-    8: "La tecnología no está cambiando cómo se decide.",
-    9: "El aprendizaje se va con las personas — no queda en el sistema."
+    0: "Las decisiones recorren varias manos antes de ejecutarse — cada paso agrega tiempo y ruido.",
+    1: "La información para decidir existe, pero no está en el momento ni en el lugar correcto.",
+    2: "Una parte importante de la energía se va en coordinar, supervisar y corregir.",
+    3: "El costo de equivocarse es alto, y eso hace que se decida menos de lo necesario.",
+    4: "Los cambios que se implementan tienden a diluirse — los incentivos reales no los acompañan.",
+    5: "Las personas trabajan sin ver claramente cómo lo que hacen impacta en el resultado.",
+    6: "Todo compite por atención. No queda espacio para observar, pensar ni explorar.",
+    7: "Probar algo nuevo compite con la operación del día a día — y la operación casi siempre gana.",
+    8: "Hay herramientas disponibles que no están cambiando cómo se toman las decisiones.",
+    9: "Lo que se aprende queda en las personas. Si alguien se va, ese conocimiento se va también."
   };
 
-  // Build dynamic narrative — unique per person's specific weak/strong combination
+  // Helper: lowercase only first char
+  const lcFirst = s => s.charAt(0).toLowerCase() + s.slice(1);
+
+  // Build dynamic narrative — insightful, not accusatory. This is the first impression.
   const paragraphs = [];
   const total = answers.reduce((a, b) => a + b, 0);
 
-  // --- PARAGRAPH 1: Opening (profile + strongest indicator) ---
+  // --- PARAGRAPH 1: Opening — validate, then open the question ---
   if (profileClass === "absent") {
-    paragraphs.push("Tu empresa funciona. Pero funciona porque vos la empujás todos los días.");
+    paragraphs.push("Tu empresa funciona. Llegó hasta acá — y eso no es poco. Pero probablemente sentís que depende demasiado de vos, que los problemas se repiten, y que el esfuerzo no se traduce en resultados proporcionados.");
   } else if (profileClass === "partial") {
     const openings = {
-      "Diferenciación defendible": "Tu empresa tiene algo propio — algo que otros no copian fácil. Pero eso solo no alcanza.",
-      "Margen": "Tu estructura captura valor. No es poco. Pero los cimientos que lo sostienen son frágiles.",
-      "Clientes que vuelven": "Tus clientes vuelven — y eso es la señal más difícil de fabricar. Pero hay mecanismos que la están debilitando.",
-      "Talento que quiere estar": "Tu gente quiere estar. Eso es raro y valioso. Pero hay cosas que anulan esa ventaja.",
-      "Capacidad de invertir": "Generás espacio para mejorar. Eso te pone adelante. Pero ese espacio se desperdicia si los mecanismos base no funcionan.",
-      "Resiliencia": "Tu empresa aguanta golpes. Eso es una base real. Pero resistir no es lo mismo que prosperar.",
-      "Opcionalidad": "Tenés espacio para elegir — y eso vale más de lo que parece. Pero las opciones no sirven si los cimientos no las sostienen."
+      "Diferenciación defendible": "Tu empresa tiene algo propio — algo que otros no copian fácil. Eso es una ventaja real. La pregunta es qué más necesita para que esa ventaja se sostenga sola.",
+      "Margen": "Tu empresa captura valor. Eso no es trivial — muchas no lo logran. Ahora, hay mecanismos que podrían hacer que captures más, con el mismo esfuerzo.",
+      "Clientes que vuelven": "Tus clientes vuelven — y eso es la señal más difícil de fabricar. Es una base fuerte. Hay mecanismos internos que podrían estar frenando ese potencial.",
+      "Talento que quiere estar": "Tu gente quiere estar — y eso se construyó, no pasó solo. Es un activo real. La pregunta es si el sistema les da las condiciones para dar lo mejor.",
+      "Capacidad de invertir": "Generás capacidad para mejorar — la mayoría de las empresas no pueden decir eso. Pero esa capacidad rinde más cuando los mecanismos base la acompañan.",
+      "Resiliencia": "Tu empresa absorbe golpes sin perder el rumbo. Es una fortaleza que se nota en las crisis. Ahora, hay oportunidad en pasar de resistir a prosperar.",
+      "Opcionalidad": "Tenés espacio para elegir hacia dónde ir — eso vale mucho. La pregunta es si los mecanismos internos están listos para aprovechar esas opciones."
     };
     paragraphs.push(openings[strongest.label]);
   } else if (profileClass === "building") {
-    paragraphs.push(`Tu empresa tiene bases reales — ${strengthPhrases[strongest.label]}. La pregunta ya no es si funciona, sino dónde está el valor que dejás sobre la mesa.`);
+    paragraphs.push(`Tu empresa tiene bases sólidas — ${strengthPhrases[strongest.label]}. Los mecanismos principales funcionan. La pregunta ahora es dónde está el valor que se queda sobre la mesa.`);
   } else {
-    paragraphs.push("Tu empresa prospera por diseño, no por esfuerzo. Eso es raro — y no es casualidad.");
+    paragraphs.push("Tu empresa prospera por diseño, no solo por esfuerzo. Los mecanismos que producen prosperidad están operando — y eso es raro.");
   }
 
-  // --- PARAGRAPH 2: Specific weakness diagnosis (indicator + mechanisms) ---
+  // --- PARAGRAPH 2: Specific insight — what we see, framed as opportunity ---
   if (profileClass === "absent") {
-    paragraphs.push(`${mechPhrases[weakMech1.index]} ${mechPhrases[weakMech2.index]} No es falta de esfuerzo — es que los cimientos no están construidos.`);
+    paragraphs.push(`Lo que vemos: ${lcFirst(mechPhrases[weakMech1.index])} ${lcFirst(mechPhrases[weakMech2.index])} Esto no es falta de esfuerzo — es que hay mecanismos de base que aún no están construidos.`);
   } else if (profileClass === "partial") {
-    paragraphs.push(`${weaknessPhrases[weakest.label]} Y a nivel operativo: ${mechPhrases[weakMech1.index].toLowerCase()}`);
+    paragraphs.push(`Donde vemos más oportunidad: ${lcFirst(weaknessPhrases[weakest.label])} A nivel operativo, ${lcFirst(mechPhrases[weakMech1.index])}`);
   } else if (profileClass === "building") {
-    paragraphs.push(`${weaknessPhrases[weakest.label]}`);
+    paragraphs.push(`Donde vemos más oportunidad: ${lcFirst(weaknessPhrases[weakest.label])}`);
     if (secondWeakest.score < 50) {
-      paragraphs.push(`${weaknessPhrases[secondWeakest.label]}`);
+      paragraphs.push(`También: ${lcFirst(weaknessPhrases[secondWeakest.label])}`);
     }
   } else {
     const weakAreas = sorted.filter(s => s.score < 67);
     if (weakAreas.length > 0) {
-      paragraphs.push(`Donde queda espacio: ${weaknessPhrases[weakAreas[0].label].toLowerCase()}`);
+      paragraphs.push(`Donde queda espacio para crecer: ${lcFirst(weaknessPhrases[weakAreas[0].label])}`);
     } else {
-      paragraphs.push(`Los mecanismos principales están operando. ${strongest.score === 100 ? "Y en " + strongest.label.toLowerCase() + " estás al máximo." : "El sistema genera prosperidad de forma sostenida."}`);
+      paragraphs.push(`Los mecanismos principales están operando. ${strongest.score === 100 ? "En " + strongest.label.toLowerCase() + " estás al máximo." : "El sistema genera prosperidad de forma sostenida."}`);
     }
   }
 
-  // --- PARAGRAPH 3: Mechanism-specific bridge (what connects weakness to action) ---
+  // --- PARAGRAPH 3: Structural insight — connect pattern to system ---
   if (profileClass === "absent") {
-    paragraphs.push("No es un tema de actitud — es estructural. Los sistemas tienen estados por defecto, y el tuyo vuelve al mismo lugar después de cada intento de cambio. Eso se puede cambiar, pero no empujando más fuerte — se cambia moviendo lo que sostiene el estado actual.");
+    paragraphs.push("Estos patrones son comunes y tienen una explicación estructural: los sistemas tienen estados por defecto, y tienden a volver ahí después de cada intento de cambio. No se resuelve empujando más fuerte — se resuelve cambiando lo que sostiene el estado actual.");
   } else if (profileClass === "partial") {
-    // Pick a mechanism that ISN'T the weakest (to add variety from P2)
     const thirdMech = mechWeak[2] || mechWeak[1];
     if (thirdMech.score <= 2) {
-      paragraphs.push(`Hay otro mecanismo que pesa: ${mechPhrases[thirdMech.index].toLowerCase()} Cuando se acumulan, cada uno frena al otro.`);
+      paragraphs.push(`Hay otro patrón que probablemente reconozcas: ${lcFirst(mechPhrases[thirdMech.index])} Cuando estos mecanismos se acumulan, se frenan entre sí — pero también se pueden resolver en cadena.`);
     }
   } else if (profileClass === "building") {
-    paragraphs.push(`El mecanismo más débil: ${mechPhrases[weakMech1.index].toLowerCase()} Resolver eso tiene efecto cascada sobre ${weakest.label.toLowerCase()} y ${secondWeakest.label.toLowerCase()}.`);
+    paragraphs.push(`El mecanismo que más impacto tendría si se resuelve: ${lcFirst(mechPhrases[weakMech1.index])} Mover eso tiene efecto cascada sobre ${weakest.label.toLowerCase()} y ${secondWeakest.label.toLowerCase()}.`);
   }
-  // solid: no P3 needed
 
-  // --- PARAGRAPH 4: Closing (profile-specific call to reflection) ---
+  // --- PARAGRAPH 4: Closing — open the door, don't close it ---
   if (profileClass === "absent") {
-    paragraphs.push("Hay 10 mecanismos que hacen próspera a una empresa. La mayoría no están operando en la tuya. Pero cada uno se puede construir — cuando sabés cuál y en qué orden.");
+    paragraphs.push("Hay 10 mecanismos que determinan si una empresa prospera. La mayoría aún no están operando — pero cada uno se puede construir cuando se sabe cuál mover primero y en qué orden.");
   } else if (profileClass === "partial") {
-    paragraphs.push("La prosperidad no viene de resolver todo a la vez — viene de identificar cuáles cimientos faltan y en qué orden construirlos. Los tuyos están claros.");
+    paragraphs.push("La prosperidad no viene de resolver todo a la vez — viene de identificar qué mecanismos faltan y en qué orden construirlos. En tu caso, los puntos de mayor impacto están claros.");
   } else if (profileClass === "building") {
-    paragraphs.push("La diferencia entre una empresa buena y una que prospera no es más esfuerzo — es saber qué mover y qué dejar de hacer.");
+    paragraphs.push("La diferencia entre una empresa buena y una que prospera no es más esfuerzo — es saber qué mover y qué dejar de hacer. En tu caso, los puntos de mayor impacto son pocos y concretos.");
   } else {
-    paragraphs.push("Si querés comprimir tiempos con IA, explorar nuevos modelos, o escalar sin agregar complejidad — eso sí es conversación.");
+    paragraphs.push("Si estás pensando en comprimir tiempos con IA, explorar nuevos modelos, o escalar sin agregar complejidad — eso es exactamente la conversación que vale la pena tener.");
   }
 
   return paragraphs;
