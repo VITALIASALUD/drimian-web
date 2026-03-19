@@ -238,7 +238,7 @@ function selectOption(qIndex, value, element) {
       // All done — show results
       showResults();
     }
-  }, 3500);
+  }, 2000);
 }
 
 function calculateIndicatorScores() {
