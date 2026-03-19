@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "drimian-web",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["serve", "/tmp/drimian-web", "-l", "3456", "--no-clipboard"],
+      "port": 3456
+    }
+  ]
+}

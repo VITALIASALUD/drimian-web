@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Drimian — We Dream With Intelligence</title>
+  <meta name="description" content="Consultora de gestión y tecnología. Diagnosticamos, diseñamos e implementamos los mecanismos que hacen próspera a una empresa.">
+  <meta name="theme-color" content="#0a0a14">
+
+  <!-- OG -->
+  <meta property="og:title" content="Drimian — ¿Estás construyendo lo que va a hacer próspera a tu empresa?">
+  <meta property="og:description" content="10 preguntas. 3 minutos. Descubrí si estás empujando más fuerte — o cambiando lo que importa.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://drimian.com">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- ==================== -->
+  <!-- HERO                 -->
+  <!-- ==================== -->
+  <section id="hero">
+    <!-- Logo placeholder - replace with actual SVG -->
+    <div style="margin-bottom: 16px;">
+      <svg width="180" height="40" viewBox="0 0 180 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <text x="0" y="30" font-family="Inter" font-weight="700" font-size="28" fill="#f0f0f5" letter-spacing="0.15em">DRIMIAN</text>
+      </svg>
+    </div>
+    <div class="tagline">We Dream With Intelligence</div>
+
+    <h1>¿Estás construyendo lo que va a hacer próspera a tu empresa?</h1>
+
+    <p class="subtitle">
+      10 preguntas. 3 minutos. Descubrí si estás empujando más fuerte — o cambiando lo que importa.
+    </p>
+
+    <div class="cta-group">
+      <button class="btn btn-primary" onclick="startDiagnostic()">
+        Empezar el diagnóstico
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10m0 0L9 4m4 4L9 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <a href="#about" class="btn btn-secondary">O seguí leyendo ↓</a>
+    </div>
+
+    <div class="scroll-hint">↓</div>
+  </section>
+
+  <!-- ==================== -->
+  <!-- DIAGNOSTIC           -->
+  <!-- ==================== -->
+  <section id="diagnostic" style="display: none;">
+    <div class="diagnostic-intro">
+      <h2>Diagnóstico de Prosperidad</h2>
+      <p>Cada pregunta mide un mecanismo que produce prosperidad. No hay respuestas correctas — hay respuestas honestas.</p>
+    </div>
+
+    <div class="progress-label" id="progress-label">1 de 10</div>
+    <div class="progress-bar">
+      <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+    </div>
+
+    <div id="questions-area">
+      <!-- Questions render here dynamically -->
+    </div>
+  </section>
+
+  <!-- ==================== -->
+  <!-- RESULTS              -->
+  <!-- ==================== -->
+  <div id="results">
+    <div class="result-profile">
+      <div class="score-badge" id="result-badge">CIMIENTOS</div>
+      <div class="score-number" id="result-score">0<span>/40</span></div>
+    </div>
+
+    <div class="result-narrative" id="result-narrative">
+    </div>
+
+    <!-- Radar -->
+    <div class="radar-container">
+      <canvas id="radar-chart"></canvas>
+    </div>
+    <p class="radar-subtitle">Esto no es lo que tenés — es lo que estás construyendo.</p>
+
+    <!-- Indicator bars -->
+    <div class="indicators-detail" id="indicator-bars">
+    </div>
+
+    <!-- Palancas -->
+    <div class="palancas">
+      <h3>Las palancas que más moverían tu empresa</h3>
+      <div id="palancas-list"></div>
+    </div>
+
+    <!-- CTA -->
+    <div class="result-cta">
+      <p>Estas palancas se pueden construir. Hablemos de cuáles primero.</p>
+      <a href="https://wa.me/5917XXXXXXX?text=Hola%2C%20hice%20el%20diagnóstico%20en%20drimian.com%20y%20quiero%20conversar." class="btn btn-primary" target="_blank" rel="noopener">
+        Hablemos por WhatsApp
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10m0 0L9 4m4 4L9 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+
+      <div class="lead-capture">
+        <p>¿Querés recibir un análisis detallado de tus respuestas?</p>
+        <form class="lead-form" onsubmit="submitLead(event)">
+          <input type="text" name="name" placeholder="Tu nombre" required>
+          <input type="text" name="company" placeholder="Tu empresa" required>
+          <input type="email" name="email" placeholder="Tu email" required>
+          <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">Enviar</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== -->
+  <!-- ABOUT                -->
+  <!-- ==================== -->
+  <div id="about" class="section-alt">
+    <div class="about-section">
+      <h2>We Dream With Intelligence</h2>
+      <p>
+        Consultora de gestión y tecnología. Usamos inteligencia artificial y un sistema de principios propio para diagnosticar, diseñar e implementar los mecanismos que hacen próspera a una empresa.
+      </p>
+      <p>
+        <span class="highlight">No damos informes — intervenimos.</span> Lo que construimos queda operando en tu empresa.
+      </p>
+      <div class="sectors">
+        <span class="sector-tag">Salud</span>
+        <span class="sector-tag">Construcción</span>
+        <span class="sector-tag">Hotelería</span>
+        <span class="sector-tag">Seguros</span>
+        <span class="sector-tag">Tu industria</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== -->
+  <!-- MODEL                -->
+  <!-- ==================== -->
+  <div>
+    <div class="about-section">
+      <h2>Piel en el juego</h2>
+      <p>
+        Cobramos un bono por tu prosperidad. Al inicio del año acordamos 3-5 objetivos medibles con datos del sistema.
+      </p>
+      <p>
+        <span class="highlight">Si al cierre no cumplimos el mínimo, nos vamos automáticamente.</span> Sin comités. Sin negociación. El dato decide.
+      </p>
+      <p>Nos va bien cuando a tu empresa le va bien. Si no, nos vamos.</p>
+    </div>
+  </div>
+
+  <!-- ==================== -->
+  <!-- PRINCIPLE            -->
+  <!-- ==================== -->
+  <div class="section-alt">
+    <div class="about-section">
+      <h2>Un principio</h2>
+      <div class="principle-box">
+        <h3>El sistema produce resultados, no las personas.</h3>
+        <p>
+          La misma persona produce 92 en un sistema y 45 en otro. Antes de cambiar a la gente, mirá el sistema en el que operan. Si un problema se repite con personas diferentes, el problema no son las personas.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== -->
+  <!-- FOOTER CTA           -->
+  <!-- ==================== -->
+  <section id="footer-cta">
+    <h2>Empecemos a conversar.</h2>
+    <p>
+      Si algo de lo que leíste te hizo pensar distinto sobre tu empresa, hablemos. Sin compromiso. El primer paso es una conversación.
+    </p>
+    <a href="https://wa.me/5917XXXXXXX?text=Hola%2C%20vi%20la%20web%20de%20Drimian%20y%20quiero%20conversar." class="btn btn-primary" target="_blank" rel="noopener">
+      WhatsApp
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10m0 0L9 4m4 4L9 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+    <div class="contact-info">
+      contacto@drimian.com · Santa Cruz, Bolivia · Latinoamérica
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    &copy; 2026 Drimian. Todos los derechos reservados.
+  </footer>
+
+  <!-- WhatsApp floating -->
+  <a href="https://wa.me/5917XXXXXXX?text=Hola%2C%20vi%20la%20web%20de%20Drimian." class="whatsapp-float" target="_blank" rel="noopener" aria-label="WhatsApp">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+  </a>
+
+  <!-- Scripts -->
+  <script src="js/diagnostic.js"></script>
+
+  <script>
+    // Lead form (basic — stores to console, replace with API)
+    function submitLead(e) {
+      e.preventDefault();
+      const form = e.target;
+      const data = {
+        name: form.name.value,
+        company: form.company.value,
+        email: form.email.value,
+        answers: answers,
+        total: answers.reduce((a, b) => a + b, 0),
+        profile: getProfile(answers.reduce((a, b) => a + b, 0)).name,
+        indicators: calculateIndicatorScores(),
+        timestamp: new Date().toISOString()
+      };
+      console.log("Lead captured:", data);
+      // TODO: Send to Supabase/Google Sheets/email
+      form.innerHTML = '<p style="color: var(--success); padding: 16px;">Listo. Te enviamos el análisis detallado.</p>';
+    }
+  </script>
+
+</body>
+</html>
