@@ -12,7 +12,7 @@ const QUESTIONS = [
       "Hay alguien asignado, pero necesita aprobación para actuar",
       "Una persona ve la información, decide y actúa. El resultado vuelve a ella"
     ],
-    revelation: "Cada vez que una decisión pasa por 4 personas, agrega costo. La prosperidad se construye cuando una persona completa el ciclo entero."
+    revelation: "Cada handoff en una decisión agrega latencia, variabilidad y coordinación. La prosperidad se construye cuando una persona completa el ciclo entero."
   },
   {
     id: 2,
@@ -283,8 +283,8 @@ function getNarrative(profileClass, indicatorScores, answers) {
   const weaknessPhrases = {
     "Diferenciación defendible": "Lo que te diferencia no está protegido. Si mañana un competidor copia lo que hacés, ¿qué te queda?",
     "Margen": "Tu margen se está comprimiendo — y la causa probablemente no está donde creés. La estructura importa más que el esfuerzo.",
-    "Clientes que vuelven": "Tu empresa no está capturando aprendizaje de lo que funciona y lo que no. Sin eso, cada cliente es como el primero.",
-    "Talento que quiere estar": "Tu mejor gente no ve la conexión entre lo que hace y el resultado. Eso no se resuelve con bonos — se resuelve con visibilidad.",
+    "Clientes que vuelven": "Lo que tu empresa ofrece no importa lo suficiente como para que vuelvan. Si un cliente se va, preguntate: ¿se fue por precio o porque lo que hacés no le cambió nada?",
+    "Talento que quiere estar": "Tu mejor gente no tiene las condiciones para dar lo mejor de sí — significado, autonomía, desafío o conexión faltan. Eso no se resuelve con bonos.",
     "Capacidad de invertir": "La energía de tu empresa se gasta en mantener, no en mejorar. Sin capacidad de invertir, no hay evolución posible.",
     "Resiliencia": "Tu empresa es frágil. Un shock — un cliente que se va, una persona clave que renuncia, un cambio regulatorio — y todo se desestabiliza.",
     "Opcionalidad": "Estás atrapado en lo que ya hacés. Sin holgura ni experimentación, no podés elegir hacia dónde ir."
@@ -360,7 +360,7 @@ function getNarrative(profileClass, indicatorScores, answers) {
 
   // --- PARAGRAPH 3: Mechanism-specific bridge (what connects weakness to action) ---
   if (profileClass === "absent") {
-    paragraphs.push(`No es un tema de actitud — es estructural. ${mechPhrases[weakMech1.index].replace('.', '')} y ${mechPhrases[weakMech2.index].toLowerCase()} Eso se puede cambiar, pero no empujando más fuerte.`);
+    paragraphs.push("No es un tema de actitud — es estructural. Los sistemas tienen estados por defecto, y el tuyo vuelve al mismo lugar después de cada intento de cambio. Eso se puede cambiar, pero no empujando más fuerte — se cambia moviendo lo que sostiene el estado actual.");
   } else if (profileClass === "partial") {
     // Pick a mechanism that ISN'T the weakest (to add variety from P2)
     const thirdMech = mechWeak[2] || mechWeak[1];
