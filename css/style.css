@@ -133,6 +133,7 @@ section {
   text-transform: uppercase;
   color: var(--text-secondary);
   margin-bottom: 48px;
+  display: none; /* Logo image includes tagline */
 }
 
 #hero h1 {
