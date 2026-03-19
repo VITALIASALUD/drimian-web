@@ -528,6 +528,17 @@ section {
   border: 1px solid var(--border);
   border-radius: var(--radius);
   margin-top: 8px;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.principle-btn {
+  display: inline-flex;
+  margin: 0 auto;
+}
+
+.principle-btn svg {
+  width: 14px;
+  height: 14px;
 }
 
 .principle-box h3 {

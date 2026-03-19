@@ -162,12 +162,14 @@
   <div class="section-alt">
     <div class="about-section">
       <h2>Un principio</h2>
-      <div class="principle-box">
-        <h3>El sistema produce resultados, no las personas.</h3>
-        <p>
-          La misma persona produce 92 en un sistema y 45 en otro. Antes de cambiar a la gente, mirá el sistema en el que operan. Si un problema se repite con personas diferentes, el problema no son las personas.
-        </p>
+      <div class="principle-box" id="principle-box">
+        <h3 id="principle-title"></h3>
+        <p id="principle-text"></p>
       </div>
+      <button class="btn btn-secondary principle-btn" onclick="nextPrinciple()" style="margin-top: 20px;">
+        Otro principio
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M13.65 2.35a8 8 0 1 0 1.77 5.15h-2.02a6 6 0 1 1-1.19-3.72L10 6h6V0l-2.35 2.35z" fill="currentColor"/></svg>
+      </button>
     </div>
   </div>
 
@@ -199,6 +201,72 @@
   </a>
 
   <!-- Scripts -->
+  <script>
+    const PRINCIPLES = [
+      {
+        title: "El sistema produce resultados, no las personas.",
+        text: "La misma persona produce 92 en un sistema y 45 en otro. Antes de cambiar a la gente, mirá el sistema en el que operan. Si un problema se repite con personas diferentes, el problema no son las personas."
+      },
+      {
+        title: "Empujar más fuerte no funciona si el atractor no cambió.",
+        text: "Los sistemas tienen estados por defecto. Después de cualquier intervención, tienden a volver a donde estaban. Si tu equipo vuelve a lo mismo cada vez que dejás de empujar, no es falta de voluntad — es que las condiciones que sostienen el problema siguen intactas."
+      },
+      {
+        title: "No decidir teóricamente lo que podés medir.",
+        text: "Si un dato puede obtenerse del sistema real, no debería decidirse por estimación o intuición. La decisión basada en datos reales es más costosa de obtener pero más barata de corregir. La basada en supuestos es barata de tomar y cara de corregir."
+      },
+      {
+        title: "La IA amplifica el ciclo, no lo reemplaza.",
+        text: "Una persona con IA completa ciclos de decisión más rápido, con más información, con menos fricción. Pero el ciclo sigue necesitando un humano que lo dirija. IA sin humano en el ciclo produce errores pequeños que se repiten miles de veces sin que nadie los detecte."
+      },
+      {
+        title: "Prosperar no es maximizar.",
+        text: "Una empresa que maximiza eficiencia elimina holgura. Una que maximiza crecimiento consume caja. Una que maximiza corto plazo sacrifica opciones futuras. Prosperar requiere suficiencia en cada indicador, no maximización de ninguno."
+      },
+      {
+        title: "Primero estructura, después parámetros.",
+        text: "Las decisiones de estructura condicionan todo lo que viene después. Cambiar un parámetro dentro de una estructura mala no resuelve el problema. Cuando algo no funciona, la primera pregunta no es '¿cuánto?'. Es '¿el diseño es correcto?'."
+      },
+      {
+        title: "Fricción es lo que te está costando sin que lo veas.",
+        text: "Cuánto tarda tu empresa en enterarse de un problema. Cuántas personas tocan una decisión antes de que se ejecute. Cuántas reuniones terminan sin que alguien decida algo. Eso es fricción — y se puede medir."
+      },
+      {
+        title: "El miedo estructura todo lo demás.",
+        text: "Cuando el sistema penaliza el error, las personas dejan de decidir, escalar y proponer. Un sistema con miedo convierte la latencia en parálisis, la variabilidad en rigidez, y la coordinación en burocracia defensiva. Resolver el miedo primero hace que todo lo demás funcione."
+      },
+      {
+        title: "No compran tu producto. Compran progreso.",
+        text: "Tu producto compite con todo lo que resuelve el mismo problema, no solo con productos similares. La diferenciación sin barrera es temporal — debe haber algo que impida la imitación."
+      },
+      {
+        title: "Autonomía sin claridad es caos. Claridad sin autonomía es control.",
+        text: "El trabajo del líder es definir qué resultado necesita el sistema, crear las condiciones para que sea posible, y dejar que la persona encuentre su método. El fit entre persona y rol se hace visible cuando hay claridad + condiciones + autonomía."
+      }
+    ];
+
+    let currentPrinciple = Math.floor(Math.random() * PRINCIPLES.length);
+
+    function showPrinciple(index) {
+      const box = document.getElementById('principle-box');
+      box.style.opacity = '0';
+      box.style.transform = 'translateY(8px)';
+      setTimeout(() => {
+        document.getElementById('principle-title').textContent = PRINCIPLES[index].title;
+        document.getElementById('principle-text').textContent = PRINCIPLES[index].text;
+        box.style.opacity = '1';
+        box.style.transform = 'translateY(0)';
+      }, 250);
+    }
+
+    function nextPrinciple() {
+      currentPrinciple = (currentPrinciple + 1) % PRINCIPLES.length;
+      showPrinciple(currentPrinciple);
+    }
+
+    // Show first principle on load
+    document.addEventListener('DOMContentLoaded', () => showPrinciple(currentPrinciple));
+  </script>
   <script src="js/diagnostic.js"></script>
 
   <script>
