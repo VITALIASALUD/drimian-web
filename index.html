@@ -19,7 +19,7 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <!-- Styles -->
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style.css?v=2">
 </head>
 <body>
 
@@ -252,14 +252,18 @@
   <div class="section-alt">
     <div class="about-section">
       <h2>Un principio</h2>
-      <div class="principle-box" id="principle-box">
-        <h3 id="principle-title"></h3>
-        <p id="principle-text"></p>
+      <div class="principle-container">
+        <div class="principle-box" id="principle-box">
+          <h3 id="principle-title"></h3>
+          <p id="principle-text"></p>
+        </div>
       </div>
-      <button class="btn btn-secondary principle-btn" onclick="nextPrinciple()" style="margin-top: 20px;">
-        Otro principio
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M13.65 2.35a8 8 0 1 0 1.77 5.15h-2.02a6 6 0 1 1-1.19-3.72L10 6h6V0l-2.35 2.35z" fill="currentColor"/></svg>
-      </button>
+      <div class="principle-dots" id="principle-dots"></div>
+      <div class="principle-progress">
+        <div class="principle-progress-bar">
+          <div class="principle-progress-fill" id="principle-progress-fill"></div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -336,26 +340,175 @@
     ];
 
     let currentPrinciple = Math.floor(Math.random() * PRINCIPLES.length);
+    let autoplayTimer = null;
+    let progressTimer = null;
+    const AUTOPLAY_INTERVAL = 7000;
+    const PROGRESS_STEP = 50;
+    let isTransitioning = false;
 
-    function showPrinciple(index) {
+    // Build dots
+    function buildDots() {
+      const dotsContainer = document.getElementById('principle-dots');
+      PRINCIPLES.forEach((_, i) => {
+        const dot = document.createElement('button');
+        dot.className = 'principle-dot' + (i === currentPrinciple ? ' active' : '');
+        dot.setAttribute('aria-label', 'Principio ' + (i + 1));
+        dot.addEventListener('click', () => goToPrinciple(i));
+        dotsContainer.appendChild(dot);
+      });
+    }
+
+    function updateDots() {
+      const dots = document.querySelectorAll('.principle-dot');
+      dots.forEach((dot, i) => {
+        dot.classList.toggle('active', i === currentPrinciple);
+      });
+    }
+
+    function showPrinciple(index, direction) {
       const box = document.getElementById('principle-box');
-      box.style.opacity = '0';
-      box.style.transform = 'translateY(8px)';
+      const dir = direction || 'right';
+
+      if (isTransitioning) return;
+      isTransitioning = true;
+
+      // Slide out
+      box.classList.remove('visible');
+      box.classList.add(dir === 'right' ? 'sliding-out-left' : 'sliding-out-right');
+
       setTimeout(() => {
+        // Update content
         document.getElementById('principle-title').textContent = PRINCIPLES[index].title;
         document.getElementById('principle-text').textContent = PRINCIPLES[index].text;
-        box.style.opacity = '1';
-        box.style.transform = 'translateY(0)';
-      }, 250);
+
+        // Prepare slide in from opposite side
+        box.classList.remove('sliding-out-left', 'sliding-out-right');
+        box.classList.add(dir === 'right' ? 'sliding-in' : 'sliding-in-left');
+
+        // Force reflow
+        box.offsetHeight;
+
+        // Slide in
+        box.classList.remove('sliding-in', 'sliding-in-left');
+        box.classList.add('visible');
+        updateDots();
+
+        setTimeout(() => { isTransitioning = false; }, 600);
+      }, 500);
     }
 
     function nextPrinciple() {
       currentPrinciple = (currentPrinciple + 1) % PRINCIPLES.length;
-      showPrinciple(currentPrinciple);
+      showPrinciple(currentPrinciple, 'right');
+      resetAutoplay();
     }
 
-    // Show first principle on load
-    document.addEventListener('DOMContentLoaded', () => showPrinciple(currentPrinciple));
+    function prevPrinciple() {
+      currentPrinciple = (currentPrinciple - 1 + PRINCIPLES.length) % PRINCIPLES.length;
+      showPrinciple(currentPrinciple, 'left');
+      resetAutoplay();
+    }
+
+    function goToPrinciple(index) {
+      if (index === currentPrinciple) return;
+      const dir = index > currentPrinciple ? 'right' : 'left';
+      currentPrinciple = index;
+      showPrinciple(currentPrinciple, dir);
+      resetAutoplay();
+    }
+
+    // Progress bar
+    function startProgress() {
+      const fill = document.getElementById('principle-progress-fill');
+      let elapsed = 0;
+      fill.style.width = '0%';
+
+      progressTimer = setInterval(() => {
+        elapsed += PROGRESS_STEP;
+        const pct = Math.min((elapsed / AUTOPLAY_INTERVAL) * 100, 100);
+        fill.style.width = pct + '%';
+      }, PROGRESS_STEP);
+    }
+
+    // Autoplay
+    function startAutoplay() {
+      startProgress();
+      autoplayTimer = setInterval(() => {
+        nextPrinciple();
+      }, AUTOPLAY_INTERVAL);
+    }
+
+    function resetAutoplay() {
+      clearInterval(autoplayTimer);
+      clearInterval(progressTimer);
+      startAutoplay();
+    }
+
+    // Swipe support
+    function setupSwipe() {
+      const box = document.getElementById('principle-box');
+      let startX = 0;
+      let startY = 0;
+
+      box.addEventListener('touchstart', (e) => {
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+      }, { passive: true });
+
+      box.addEventListener('touchend', (e) => {
+        const dx = e.changedTouches[0].clientX - startX;
+        const dy = e.changedTouches[0].clientY - startY;
+        if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) {
+          if (dx < 0) nextPrinciple();
+          else prevPrinciple();
+        }
+      }, { passive: true });
+
+      // Mouse drag
+      let mouseDown = false;
+      let mouseStartX = 0;
+
+      box.addEventListener('mousedown', (e) => {
+        mouseDown = true;
+        mouseStartX = e.clientX;
+        box.style.cursor = 'grabbing';
+      });
+
+      document.addEventListener('mouseup', (e) => {
+        if (!mouseDown) return;
+        mouseDown = false;
+        box.style.cursor = 'grab';
+        const dx = e.clientX - mouseStartX;
+        if (Math.abs(dx) > 50) {
+          if (dx < 0) nextPrinciple();
+          else prevPrinciple();
+        }
+      });
+    }
+
+    // Pause on hover
+    function setupHoverPause() {
+      const container = document.querySelector('.principle-container');
+      container.addEventListener('mouseenter', () => {
+        clearInterval(autoplayTimer);
+        clearInterval(progressTimer);
+      });
+      container.addEventListener('mouseleave', () => {
+        resetAutoplay();
+      });
+    }
+
+    // Init
+    document.addEventListener('DOMContentLoaded', () => {
+      buildDots();
+      document.getElementById('principle-title').textContent = PRINCIPLES[currentPrinciple].title;
+      document.getElementById('principle-text').textContent = PRINCIPLES[currentPrinciple].text;
+      document.getElementById('principle-box').classList.add('visible');
+      updateDots();
+      setupSwipe();
+      setupHoverPause();
+      startAutoplay();
+    });
   </script>
   <script src="js/diagnostic.js"></script>
 
