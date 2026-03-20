@@ -141,6 +141,14 @@ section {
   display: none; /* Logo image includes tagline */
 }
 
+.hero-framing {
+  font-size: 0.85rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+}
+
 #hero h1 {
   font-size: 2.2rem;
   margin-bottom: 24px;
