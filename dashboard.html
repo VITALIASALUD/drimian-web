@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Drimian — Dashboard Diagnósticos</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: Inter, -apple-system, sans-serif; background: #0a0a14; color: #e0e0e0; padding: 24px; min-height: 100vh; }
+    h1 { font-family: 'DM Serif Display', serif; font-size: 1.8rem; margin-bottom: 8px; color: #fff; }
+    h2 { font-size: 1.1rem; color: #9999aa; margin-bottom: 16px; font-weight: 400; }
+    h3 { font-size: 1rem; color: #FF6600; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+
+    .header { margin-bottom: 32px; }
+    .header p { color: #666; font-size: 0.85rem; }
+
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-bottom: 24px; }
+    .card { background: #12121e; border: 1px solid #1e1e30; border-radius: 12px; padding: 20px; }
+    .card-full { grid-column: 1 / -1; }
+
+    .stat-row { display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
+    .stat-box { background: #12121e; border: 1px solid #1e1e30; border-radius: 12px; padding: 20px; flex: 1; min-width: 140px; text-align: center; }
+    .stat-number { font-size: 2rem; font-weight: 700; color: #FF6600; display: block; }
+    .stat-label { font-size: 0.8rem; color: #9999aa; margin-top: 4px; }
+
+    .bar-row { display: flex; align-items: center; margin-bottom: 10px; gap: 12px; }
+    .bar-label { width: 160px; font-size: 0.85rem; color: #ccc; flex-shrink: 0; }
+    .bar-track { flex: 1; height: 24px; background: #1a1a2e; border-radius: 6px; overflow: hidden; position: relative; }
+    .bar-fill { height: 100%; border-radius: 6px; transition: width 0.8s ease; display: flex; align-items: center; justify-content: flex-end; padding-right: 8px; font-size: 0.75rem; font-weight: 600; color: #fff; }
+    .bar-value { width: 40px; text-align: right; font-size: 0.85rem; color: #9999aa; flex-shrink: 0; }
+
+    .chart-container { max-width: 400px; margin: 0 auto; }
+
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    th { text-align: left; padding: 10px 12px; border-bottom: 2px solid #1e1e30; color: #FF6600; font-weight: 600; }
+    td { padding: 8px 12px; border-bottom: 1px solid #1a1a2e; color: #ccc; }
+    tr:hover td { background: #1a1a2e; }
+    .lead-row td { color: #fff; font-weight: 500; }
+
+    .loading { text-align: center; padding: 60px; color: #666; }
+    .error { color: #ff4444; text-align: center; padding: 40px; }
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 600; }
+    .badge-absent { background: #3b1111; color: #ff6b6b; }
+    .badge-partial { background: #3b2a11; color: #ffaa44; }
+    .badge-building { background: #11293b; color: #44aaff; }
+    .badge-solid { background: #113b1a; color: #44ff6b; }
+
+    .password-gate { display: flex; align-items: center; justify-content: center; min-height: 80vh; }
+    .password-form { background: #12121e; border: 1px solid #1e1e30; border-radius: 12px; padding: 40px; text-align: center; max-width: 360px; }
+    .password-form input { background: #1a1a2e; border: 1px solid #2a2a40; color: #fff; padding: 12px 16px; border-radius: 8px; width: 100%; margin: 16px 0; font-size: 1rem; }
+    .password-form button { background: #FF6600; color: #fff; border: none; padding: 12px 32px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 1rem; }
+    .password-form button:hover { background: #e65c00; }
+
+    @media (max-width: 640px) {
+      body { padding: 12px; }
+      .grid { grid-template-columns: 1fr; }
+      .bar-label { width: 100px; font-size: 0.75rem; }
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div id="password-gate" class="password-gate">
+  <div class="password-form">
+    <h1>Drimian</h1>
+    <p style="color: #9999aa; margin-top: 8px;">Dashboard de diagnósticos</p>
+    <input type="password" id="pw-input" placeholder="Clave" autofocus>
+    <br>
+    <button onclick="checkPassword()">Entrar</button>
+  </div>
+</div>
+
+<div id="dashboard" style="display:none;">
+  <div class="header">
+    <h1>Dashboard — Diagnósticos Web</h1>
+    <h2>Datos en tiempo real desde la web de Drimian</h2>
+    <p id="last-update"></p>
+  </div>
+
+  <div class="stat-row" id="stats-row">
+    <div class="stat-box"><span class="stat-number" id="s-total">—</span><span class="stat-label">Diagnósticos</span></div>
+    <div class="stat-box"><span class="stat-number" id="s-leads">—</span><span class="stat-label">Con contacto</span></div>
+    <div class="stat-box"><span class="stat-number" id="s-conversion">—</span><span class="stat-label">Tasa conversión</span></div>
+    <div class="stat-box"><span class="stat-number" id="s-avg-score">—</span><span class="stat-label">Score promedio</span></div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h3>Mecanismos — Promedio del mercado</h3>
+      <p style="color:#666; font-size:0.8rem; margin-bottom:16px;">Más bajo = más dolor. Tu mejor argumento comercial.</p>
+      <div id="mechanisms-bars"></div>
+    </div>
+
+    <div class="card">
+      <h3>Radar promedio — 7 indicadores</h3>
+      <div class="chart-container">
+        <canvas id="radar-avg"></canvas>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Distribución de perfiles</h3>
+      <div class="chart-container" style="max-width:280px;">
+        <canvas id="profile-pie"></canvas>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Palancas más frecuentes</h3>
+      <p style="color:#666; font-size:0.8rem; margin-bottom:16px;">Las que más aparecen como top 3 débiles.</p>
+      <div id="palancas-bars"></div>
+    </div>
+
+    <div class="card card-full">
+      <h3>Leads con contacto</h3>
+      <table id="leads-table">
+        <thead>
+          <tr><th>Fecha</th><th>Nombre</th><th>Empresa</th><th>WhatsApp</th><th>Score</th><th>Perfil</th><th>Palanca #1</th></tr>
+        </thead>
+        <tbody id="leads-body"></tbody>
+      </table>
+      <p id="no-leads" style="color:#666; padding:20px; text-align:center; display:none;">Aún no hay leads con datos de contacto.</p>
+    </div>
+
+    <div class="card card-full">
+      <h3>Todos los diagnósticos</h3>
+      <table>
+        <thead>
+          <tr><th>Fecha</th><th>Score</th><th>Perfil</th><th>Palanca #1</th><th>Palanca #2</th><th>Palanca #3</th><th>Contacto</th></tr>
+        </thead>
+        <tbody id="all-body"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+const SHEET_CSV = 'https://docs.google.com/spreadsheets/d/1hxt4xh3cRHFVHtDnfFvSR9dzaTk2BOws7WkeBQmXPZQ/pub?output=csv';
+const DASHBOARD_KEY = 'drimian2026';
+
+function checkPassword() {
+  const pw = document.getElementById('pw-input').value;
+  if (pw === DASHBOARD_KEY) {
+    document.getElementById('password-gate').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+    loadData();
+  } else {
+    document.getElementById('pw-input').style.borderColor = '#ff4444';
+  }
+}
+document.addEventListener('keydown', e => { if (e.key === 'Enter' && document.getElementById('password-gate').style.display !== 'none') checkPassword(); });
+
+function parseCSV(text) {
+  const lines = text.split('\n').filter(l => l.trim());
+  if (lines.length < 2) return [];
+  const headers = parseCSVLine(lines[0]);
+  return lines.slice(1).map(line => {
+    const vals = parseCSVLine(line);
+    const obj = {};
+    headers.forEach((h, i) => obj[h.trim()] = (vals[i] || '').trim());
+    return obj;
+  });
+}
+
+function parseCSVLine(line) {
+  const result = [];
+  let current = '';
+  let inQuotes = false;
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i];
+    if (inQuotes) {
+      if (ch === '"' && line[i+1] === '"') { current += '"'; i++; }
+      else if (ch === '"') inQuotes = false;
+      else current += ch;
+    } else {
+      if (ch === '"') inQuotes = true;
+      else if (ch === ',') { result.push(current); current = ''; }
+      else current += ch;
+    }
+  }
+  result.push(current);
+  return result;
+}
+
+const MECH_NAMES = [
+  'Ciclos de decision', 'Senal que guia', 'Friccion', 'Miedo estructural',
+  'Atractores', 'Compensacion', 'Holgura', 'Operacion e innovacion',
+  'Delegacion a IA', 'Aprendizaje del sistema'
+];
+const MECH_COLS = ['P1 Ciclos decision','P2 Senal','P3 Friccion','P4 Miedo','P5 Atractores','P6 Compensacion','P7 Holgura','P8 Op/Innovacion','P9 IA','P10 Aprendizaje'];
+const IND_NAMES = ['Diferenciacion','Margen','Clientes vuelven','Talento','Cap. invertir','Resiliencia','Opcionalidad'];
+
+function getBarColor(pct) {
+  if (pct <= 25) return '#ff4444';
+  if (pct <= 50) return '#ffaa44';
+  if (pct <= 75) return '#3b82f6';
+  return '#22c55e';
+}
+
+function profileBadge(profile) {
+  if (!profile) return '';
+  const p = profile.toUpperCase();
+  if (p.includes('AUSENTE')) return '<span class="badge badge-absent">Ausentes</span>';
+  if (p.includes('PARCIAL')) return '<span class="badge badge-partial">Parciales</span>';
+  if (p.includes('CONSTRUCC')) return '<span class="badge badge-building">En construccion</span>';
+  if (p.includes('SOLID')) return '<span class="badge badge-solid">Solidos</span>';
+  return '<span class="badge">' + profile + '</span>';
+}
+
+function formatDate(ts) {
+  if (!ts) return '—';
+  try {
+    const d = new Date(ts);
+    return d.toLocaleDateString('es-BO', { day: '2-digit', month: 'short', year: 'numeric' });
+  } catch { return ts.substring(0, 10); }
+}
+
+async function loadData() {
+  try {
+    const resp = await fetch(SHEET_CSV);
+    if (!resp.ok) throw new Error('No se pudo cargar la planilla. Verificá que esté publicada.');
+    const text = await resp.text();
+    const rows = parseCSV(text);
+    if (rows.length === 0) {
+      document.getElementById('s-total').textContent = '0';
+      document.getElementById('s-leads').textContent = '0';
+      document.getElementById('s-conversion').textContent = '—';
+      document.getElementById('s-avg-score').textContent = '—';
+      return;
+    }
+    render(rows);
+  } catch (err) {
+    document.getElementById('stats-row').innerHTML = '<div class="error">' + err.message + '</div>';
+  }
+}
+
+function render(rows) {
+  const total = rows.length;
+  const leads = rows.filter(r => r.Nombre && r.Nombre.trim());
+  const scores = rows.map(r => parseInt(r['Score Total'])).filter(n => !isNaN(n));
+  const avgScore = scores.length ? (scores.reduce((a,b) => a+b, 0) / scores.length).toFixed(1) : '—';
+
+  // Stats
+  document.getElementById('s-total').textContent = total;
+  document.getElementById('s-leads').textContent = leads.length;
+  document.getElementById('s-conversion').textContent = total > 0 ? Math.round(leads.length / total * 100) + '%' : '—';
+  document.getElementById('s-avg-score').textContent = avgScore + '/40';
+  document.getElementById('last-update').textContent = 'Actualizado: ' + new Date().toLocaleString('es-BO');
+
+  // Mechanisms avg
+  const mechAvgs = MECH_COLS.map((col, i) => {
+    const vals = rows.map(r => parseFloat(r[col])).filter(n => !isNaN(n));
+    const avg = vals.length ? vals.reduce((a,b) => a+b, 0) / vals.length : 0;
+    return { name: MECH_NAMES[i], avg, pct: ((avg - 1) / 3) * 100 };
+  });
+  mechAvgs.sort((a, b) => a.avg - b.avg);
+
+  const mechContainer = document.getElementById('mechanisms-bars');
+  mechContainer.innerHTML = mechAvgs.map(m => `
+    <div class="bar-row">
+      <span class="bar-label">${m.name}</span>
+      <div class="bar-track"><div class="bar-fill" style="width:${Math.max(m.pct, 3)}%;background:${getBarColor(m.pct)}">${m.avg.toFixed(1)}</div></div>
+      <span class="bar-value">${Math.round(m.pct)}%</span>
+    </div>
+  `).join('');
+
+  // Indicators radar
+  const indAvgs = IND_NAMES.map(name => {
+    const vals = rows.map(r => parseFloat(r[name])).filter(n => !isNaN(n));
+    return vals.length ? vals.reduce((a,b) => a+b, 0) / vals.length : 0;
+  });
+
+  new Chart(document.getElementById('radar-avg'), {
+    type: 'radar',
+    data: {
+      labels: IND_NAMES,
+      datasets: [{
+        data: indAvgs,
+        backgroundColor: 'rgba(255, 102, 0, 0.15)',
+        borderColor: 'rgba(255, 102, 0, 0.8)',
+        borderWidth: 2,
+        pointBackgroundColor: '#FF6600',
+        pointRadius: 4
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: { r: { beginAtZero: true, max: 100, ticks: { display: false }, grid: { color: 'rgba(255,255,255,0.06)' }, angleLines: { color: 'rgba(255,255,255,0.06)' }, pointLabels: { color: '#9999aa', font: { size: 11 } } } },
+      plugins: { legend: { display: false } }
+    }
+  });
+
+  // Profile pie
+  const profileCounts = {};
+  rows.forEach(r => {
+    const p = r.Perfil || 'Sin perfil';
+    profileCounts[p] = (profileCounts[p] || 0) + 1;
+  });
+  const profileLabels = Object.keys(profileCounts);
+  const profileData = Object.values(profileCounts);
+  const profileColors = profileLabels.map(l => {
+    const u = l.toUpperCase();
+    if (u.includes('AUSENTE')) return '#ff4444';
+    if (u.includes('PARCIAL')) return '#ffaa44';
+    if (u.includes('CONSTRUCC')) return '#3b82f6';
+    if (u.includes('SOLID')) return '#22c55e';
+    return '#666';
+  });
+
+  new Chart(document.getElementById('profile-pie'), {
+    type: 'doughnut',
+    data: {
+      labels: profileLabels,
+      datasets: [{ data: profileData, backgroundColor: profileColors, borderWidth: 0 }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { position: 'bottom', labels: { color: '#9999aa', padding: 12, font: { size: 12 } } } }
+    }
+  });
+
+  // Palancas frequency
+  const palancaCount = {};
+  rows.forEach(r => {
+    ['Palanca 1', 'Palanca 2', 'Palanca 3'].forEach(col => {
+      const p = r[col];
+      if (p && p.trim()) palancaCount[p.trim()] = (palancaCount[p.trim()] || 0) + 1;
+    });
+  });
+  const palancaSorted = Object.entries(palancaCount).sort((a, b) => b[1] - a[1]);
+  const maxPalanca = palancaSorted.length ? palancaSorted[0][1] : 1;
+
+  const palancasContainer = document.getElementById('palancas-bars');
+  palancasContainer.innerHTML = palancaSorted.map(([name, count]) => `
+    <div class="bar-row">
+      <span class="bar-label">${name}</span>
+      <div class="bar-track"><div class="bar-fill" style="width:${(count/maxPalanca)*100}%;background:#FF6600">${count}x</div></div>
+    </div>
+  `).join('');
+
+  // Leads table
+  const leadsBody = document.getElementById('leads-body');
+  if (leads.length === 0) {
+    document.getElementById('no-leads').style.display = 'block';
+  } else {
+    leadsBody.innerHTML = leads.sort((a, b) => (b.Timestamp || '').localeCompare(a.Timestamp || '')).map(r => `
+      <tr class="lead-row">
+        <td>${formatDate(r.Timestamp)}</td>
+        <td>${r.Nombre || '—'}</td>
+        <td>${r.Empresa || '—'}</td>
+        <td>${r.WhatsApp || '—'}</td>
+        <td>${r['Score Total'] || '—'}/40</td>
+        <td>${profileBadge(r.Perfil)}</td>
+        <td>${r['Palanca 1'] || '—'}</td>
+      </tr>
+    `).join('');
+  }
+
+  // All diagnostics table
+  const allBody = document.getElementById('all-body');
+  allBody.innerHTML = rows.sort((a, b) => (b.Timestamp || '').localeCompare(a.Timestamp || '')).map(r => `
+    <tr>
+      <td>${formatDate(r.Timestamp)}</td>
+      <td>${r['Score Total'] || '—'}/40</td>
+      <td>${profileBadge(r.Perfil)}</td>
+      <td>${r['Palanca 1'] || '—'}</td>
+      <td>${r['Palanca 2'] || '—'}</td>
+      <td>${r['Palanca 3'] || '—'}</td>
+      <td>${r.Nombre ? '✓' : '—'}</td>
+    </tr>
+  `).join('');
+}
+</script>
+</body>
+</html>
