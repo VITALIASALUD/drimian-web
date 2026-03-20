@@ -48,7 +48,7 @@ const QUESTIONS = [
       "Se analizó qué pasó, pero las conclusiones no cambiaron nada",
       "Se analizó qué falló en el sistema, se cambió algo concreto, y quedó documentado"
     ],
-    revelation: "Cuando equivocarse sale caro, nadie decide. Y no decidir es el error más caro de todos."
+    revelation: "Cuando equivocarse es costoso en el sistema, la gente tiende a escalar o esperar en vez de decidir. Ese patrón se puede invertir diseñando decisiones más reversibles y con mejor información."
   },
   {
     id: 5,
@@ -96,12 +96,12 @@ const QUESTIONS = [
       "Podemos probar, pero no hay forma clara de decidir qué sigue y qué se mata",
       "Hay espacio explícito para explorar, con reglas claras, sin afectar la operación diaria"
     ],
-    revelation: "Si probar algo nuevo desestabiliza todo, la empresa no innova — sobrevive. Y sobrevivir no es prosperar."
+    revelation: "Si probar algo nuevo desestabiliza la operación, significa que están acoplados. Se pueden desacoplar — y eso abre espacio para explorar sin poner en riesgo lo que ya funciona."
   },
   {
     id: 9,
     mechanism: "Delegación a IA",
-    text: "¿Sabés qué decisiones de tu empresa deberían tomarse con IA, cuáles con IA + humano, y cuáles solo un humano?",
+    text: "¿Tenés claro en qué parte de cada decisión — recopilar información, interpretar, ejecutar — la IA agrega valor y en cuál necesitás criterio humano?",
     options: [
       "No me lo he planteado así. Usamos lo que hay",
       "Hemos probado herramientas, pero no cambiaron cómo decidimos",
@@ -113,7 +113,7 @@ const QUESTIONS = [
   {
     id: 10,
     mechanism: "Aprendizaje del sistema",
-    text: "Cuando algo funciona bien (o mal) en tu empresa, ¿eso cambia cómo se hace la próxima vez?",
+    text: "Cuando algo funciona bien (o mal) en tu empresa, ¿hay un mecanismo que captura eso y lo deja disponible para la próxima decisión similar?",
     options: [
       "No. Cada vez empezamos de cero, como si fuera la primera",
       "Las personas aprenden, pero si se van, el aprendizaje se va con ellas",
@@ -163,9 +163,9 @@ const PALANCA_DESCRIPTIONS = {
   0: { name: "Ciclos de decisión", text: "Las decisiones recorren varias manos antes de ejecutarse. Cada paso agrega tiempo y ruido — y hay formas concretas de acortarlo." },
   1: { name: "Señal que guía", text: "La información para decidir existe, pero no llega en el momento correcto. Eso hace que se decida por experiencia en vez de por datos." },
   2: { name: "Fricción", text: "Una parte importante de la energía se va en coordinar, supervisar y corregir. Esa energía podría ir a producir y mejorar." },
-  3: { name: "Miedo estructural", text: "El costo de equivocarse es alto, y eso frena las decisiones. El sistema puede rediseñarse para que decidir no sea arriesgado." },
+  3: { name: "Miedo estructural", text: "Cuando el costo percibido de error es alto, la gente escala o se paraliza. Esto se resuelve haciendo decisiones más reversibles, mejorando la información disponible, y separando la evaluación de desempeño del error en sí." },
   4: { name: "Atractores", text: "Los cambios tienden a diluirse porque los incentivos reales del sistema no los acompañan. Eso tiene solución estructural." },
-  5: { name: "Compensación", text: "Las personas trabajan sin ver claramente cómo lo que hacen impacta en el resultado. Conectar eso cambia el comportamiento." },
+  5: { name: "Compensación", text: "Si no ves cómo tus decisiones impactan el resultado — o te lo comunican mucho después de que decidiste — no hay forma de aprender y mejorar. Conectar esa cadena: tu decisión → resultado visible → feedback cercano." },
   6: { name: "Holgura", text: "Todo compite por atención y no queda espacio para observar ni pensar. Sin eso, solo se puede reaccionar." },
   7: { name: "Operación e innovación", text: "Probar algo nuevo compite con la operación del día a día — y la operación casi siempre gana. Se puede separar sin riesgo." },
   8: { name: "Delegación a IA", text: "Hay herramientas disponibles que no están cambiando cómo se toman las decisiones. El criterio de qué automatizar aún no está definido." },
@@ -238,7 +238,7 @@ function selectOption(qIndex, value, element) {
       // All done — show results
       showResults();
     }
-  }, 2000);
+  }, 1200);
 }
 
 function calculateIndicatorScores() {
@@ -324,7 +324,7 @@ function getNarrative(profileClass, indicatorScores, answers) {
 
   // --- PARAGRAPH 1: Opening — validate, then open the question ---
   if (profileClass === "absent") {
-    paragraphs.push("Tu empresa funciona. Llegó hasta acá — y eso no es poco. Pero probablemente sentís que depende demasiado de vos, que los problemas se repiten, y que el esfuerzo no se traduce en resultados proporcionados.");
+    paragraphs.push("Tu empresa funciona. Llegó hasta acá — y eso es resultado de tu liderazgo y decisiones cotidianas. La pregunta ahora es si los mecanismos detrás de esos resultados pueden seguir operando sin que vos tengas que empujar cada uno de ellos.");
   } else if (profileClass === "partial") {
     const openings = {
       "Diferenciación defendible": "Tu empresa tiene algo propio — algo que otros no copian fácil. Eso es una ventaja real. La pregunta es qué más necesita para que esa ventaja se sostenga sola.",
