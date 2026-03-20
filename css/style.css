@@ -141,18 +141,19 @@ section {
   display: none; /* Logo image includes tagline */
 }
 
-.hero-framing {
-  font-size: 0.85rem;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--text-muted);
-  margin-bottom: 12px;
-}
-
 #hero h1 {
   font-size: 2.2rem;
   margin-bottom: 24px;
-  max-width: 600px;
+  max-width: 700px;
+}
+
+.hero-mission {
+  font-size: 1.15rem;
+  color: var(--orange);
+  max-width: 560px;
+  margin-bottom: 32px;
+  line-height: 1.7;
+  font-weight: 500;
 }
 
 #hero .subtitle {
