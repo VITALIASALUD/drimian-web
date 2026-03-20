@@ -125,15 +125,13 @@
       </a>
 
       <div class="lead-capture">
-        <p>¿Querés recibir un análisis detallado de tus respuestas?</p>
+        <p>¿Querés que analicemos esto juntos? 30 minutos, sin costo.</p>
         <form class="lead-form" id="lead-form" onsubmit="submitLead(event)">
           <input type="text" name="name" placeholder="Tu nombre" required>
           <input type="text" name="company" placeholder="Tu empresa" required>
-          <input type="email" name="email" placeholder="Tu email" required>
-          <input type="hidden" name="score" id="lead-score">
-          <input type="hidden" name="profile" id="lead-profile">
-          <input type="hidden" name="indicators" id="lead-indicators">
-          <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">Enviar</button>
+          <input type="tel" name="whatsapp" placeholder="Tu WhatsApp (con código de país)" required>
+          <input type="email" name="email" placeholder="Tu email (opcional)">
+          <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">Quiero conversar</button>
         </form>
       </div>
     </div>
@@ -588,32 +586,18 @@
     function submitLead(e) {
       e.preventDefault();
       const form = e.target;
-      const total = answers.reduce((a, b) => a + b, 0);
-      const profile = getProfile(total);
-      const indicators = calculateIndicatorScores();
 
-      // Fill hidden fields
-      document.getElementById('lead-score').value = total + '/40 — ' + profile.name;
-      document.getElementById('lead-profile').value = profile.name;
-      document.getElementById('lead-indicators').value = Object.entries(indicators).map(([k,v]) => k + ': ' + v + '%').join(' | ');
-
-      // Send via formsubmit.co (no signup needed, sends to contacto@drimian.com)
-      const formData = new FormData(form);
-      formData.append('_subject', 'Nuevo diagnóstico web: ' + form.name.value + ' — ' + form.company.value);
-      formData.append('_template', 'table');
-      formData.append('_captcha', 'false');
-
-      fetch('https://formsubmit.co/ajax/contacto@drimian.com', {
-        method: 'POST',
-        body: formData
-      }).then(r => r.json()).then(data => {
-        form.innerHTML = '<p style="color: var(--success); padding: 16px;">Listo. Te enviamos el análisis detallado.</p>';
-      }).catch(err => {
-        // Fallback: open WhatsApp with data
-        const msg = encodeURIComponent('Hola, hice el diagnóstico en drimian.com.\nScore: ' + total + '/40 (' + profile.name + ')\nNombre: ' + form.name.value + '\nEmpresa: ' + form.company.value + '\nEmail: ' + form.email.value);
-        window.open('https://wa.me/59176600056?text=' + msg, '_blank');
-        form.innerHTML = '<p style="color: var(--success); padding: 16px;">Listo. Te contactamos pronto.</p>';
+      // Enviar datos de contacto a Google Sheets (vinculado por SESSION_ID)
+      sendToSheet({
+        type: 'contact',
+        sessionId: SESSION_ID,
+        name: form.name.value,
+        company: form.company.value,
+        whatsapp: form.whatsapp.value,
+        email: form.email.value || ''
       });
+
+      form.innerHTML = '<p style="color: var(--success); padding: 16px;">Listo. Te contactamos pronto.</p>';
     }
   </script>
 

@@ -1,6 +1,23 @@
 // DRIMIAN — Diagnóstico de Prosperidad
 // 2 capas: mecanismos (10 preguntas) → indicadores de prosperidad (7)
 
+// === GOOGLE SHEETS WEBHOOK ===
+// Reemplazar con la URL del Apps Script desplegado
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwGBlNj6c7E8-piNEjJqekoVzCc9e0sqrf7sKrOJCk2Q-WBuOiMKoCn2OR2O_7Kg7Bbdw/exec';
+
+// Session ID único para vincular diagnóstico anónimo con contacto posterior
+const SESSION_ID = crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).slice(2);
+
+function sendToSheet(payload) {
+  if (!GOOGLE_SCRIPT_URL) return;
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'text/plain' },
+    body: JSON.stringify(payload)
+  }).catch(() => {});
+}
+
 const QUESTIONS = [
   {
     id: 1,
@@ -485,6 +502,23 @@ function showResults() {
 
   // Update progress bar
   document.getElementById("progress-fill").style.width = "100%";
+
+  // Enviar datos a Google Sheets (anónimo)
+  // Normalizar keys sin tildes para match con Apps Script
+  const norm = {};
+  for (const [k, v] of Object.entries(indicatorScores)) {
+    norm[k.normalize('NFD').replace(/[\u0300-\u036f]/g, '')] = v;
+  }
+  sendToSheet({
+    type: 'diagnostic',
+    sessionId: SESSION_ID,
+    answers: answers,
+    totalScore: total,
+    profile: profile.name,
+    indicators: norm,
+    palancas: palancas.map(p => p.name),
+    source: 'web'
+  });
 }
 
 function drawRadar(scores) {
