@@ -19,9 +19,12 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <!-- Styles -->
-  <link rel="stylesheet" href="css/style.css?v=2">
+  <link rel="stylesheet" href="css/style.css?v=3">
 </head>
 <body>
+
+  <!-- Scroll progress bar -->
+  <div id="scroll-progress"></div>
 
   <!-- ==================== -->
   <!-- HERO                 -->
@@ -123,14 +126,14 @@
   <!-- ==================== -->
   <div id="about" class="section-alt">
     <div class="about-section">
-      <h2>We Dream With Intelligence</h2>
-      <p>
+      <h2 class="reveal">We Dream With Intelligence</h2>
+      <p class="reveal">
         Consultora de gestión y tecnología. Usamos inteligencia artificial y un sistema de principios propio para diagnosticar, diseñar e implementar los mecanismos que hacen próspera a una empresa.
       </p>
-      <p>
+      <p class="reveal">
         <span class="highlight">No damos informes — intervenimos.</span> Lo que construimos queda operando en tu empresa.
       </p>
-      <div class="sectors">
+      <div class="sectors reveal">
         <span class="sector-tag">Salud</span>
         <span class="sector-tag">Construcción</span>
         <span class="sector-tag">Hotelería</span>
@@ -145,81 +148,81 @@
   <!-- ==================== -->
   <div id="cases">
     <div class="about-section">
-      <h2>Lo que construimos</h2>
-      <p>4 empresas. 230+ documentos producidos. 138 sesiones de trabajo. Cada número es real — sin nombres, sin recetas.</p>
+      <h2 class="reveal">Lo que construimos</h2>
+      <p class="reveal">4 empresas. 230+ documentos producidos. 138 sesiones de trabajo. Cada número es real — sin nombres, sin recetas.</p>
 
       <div class="cases-grid">
 
-        <div class="case-card">
+        <div class="case-card reveal">
           <div class="case-industry">Clínica privada</div>
           <div class="case-metrics">
             <div class="case-metric">
-              <span class="metric-number">172</span>
+              <span class="metric-number" data-target="172">0</span>
               <span class="metric-label">hallazgos en 16 áreas</span>
             </div>
             <div class="case-metric">
-              <span class="metric-number">+$2M</span>
+              <span class="metric-number" data-prefix="+$" data-target="2" data-suffix="M">+$0M</span>
               <span class="metric-label">en valor recuperable por año</span>
             </div>
             <div class="case-metric">
-              <span class="metric-number">11</span>
+              <span class="metric-number" data-target="11">0</span>
               <span class="metric-label">intervenciones cuantificadas</span>
             </div>
           </div>
           <p class="case-context">Diagnóstico sistémico completo de una clínica de $22.6M. 10 líderes trabajaron con IA para mapear su área. 4,818 encuestas de satisfacción procesadas. 11 intervenciones diseñadas para desbloquear más de $2M/año — sin contratar gente nueva ni comprar tecnología.</p>
         </div>
 
-        <div class="case-card">
+        <div class="case-card reveal">
           <div class="case-industry">Seguro de salud</div>
           <div class="case-metrics">
             <div class="case-metric">
-              <span class="metric-number">27,045</span>
+              <span class="metric-number" data-target="27045" data-format="comma">0</span>
               <span class="metric-label">renovaciones analizadas</span>
             </div>
             <div class="case-metric">
-              <span class="metric-number">37</span>
+              <span class="metric-number" data-target="37">0</span>
               <span class="metric-label">decisiones de pricing cerradas</span>
             </div>
             <div class="case-metric">
-              <span class="metric-number">90+</span>
+              <span class="metric-number" data-target="90" data-suffix="+">0+</span>
               <span class="metric-label">reportes producidos</span>
             </div>
           </div>
           <p class="case-context">Rediseño completo del tarifario para 5,246 afiliados. 250+ combinaciones legacy reemplazadas por 4 productos claros. 630 partos procesados para pricing maternidad. 6 competidores analizados. Cada precio calculado persona por persona con modelo actuarial propio.</p>
         </div>
 
-        <div class="case-card">
+        <div class="case-card reveal">
           <div class="case-industry">Constructora e inmobiliaria</div>
           <div class="case-metrics">
             <div class="case-metric">
-              <span class="metric-number">$22.5M</span>
+              <span class="metric-number" data-prefix="$" data-target="22.5" data-suffix="M">$0M</span>
               <span class="metric-label">en proyectos analizados</span>
             </div>
             <div class="case-metric">
-              <span class="metric-number">48</span>
+              <span class="metric-number" data-target="48">0</span>
               <span class="metric-label">cuentas comparadas entre 3 obras</span>
             </div>
             <div class="case-metric">
-              <span class="metric-number">26</span>
+              <span class="metric-number" data-target="26">0</span>
               <span class="metric-label">personas evaluadas en 4 áreas</span>
             </div>
           </div>
           <p class="case-context">Sistema completo de evaluación de terrenos con 11 predios analizados. Protocolo de entrega de edificio construido de cero. Comparativo económico de 3 proyectos para calibrar márgenes. Diagnóstico de presupuestos con 1,371 actividades mapeadas. Evaluación individual del equipo completo.</p>
         </div>
 
-        <div class="case-card">
+        <div class="case-card reveal">
           <div class="case-industry">Hotel</div>
           <div class="case-metrics">
             <div class="case-metric">
-              <span class="metric-number">24,648</span>
+              <span class="metric-number" data-target="24648" data-format="comma">0</span>
               <span class="metric-label">room-nights analizadas</span>
             </div>
             <div class="case-metric">
-              <span class="metric-number">4</span>
+              <span class="metric-number" data-target="4">0</span>
               <span class="metric-label">dashboards construidos</span>
             </div>
             <div class="case-metric">
-              <span class="metric-number">6</span>
+              <span class="metric-number" data-target="6">0</span>
               <span class="metric-label">competidores monitoreados</span>
             </div>
           </div>
@@ -230,16 +233,16 @@
 
       <!-- Consolidated stats -->
       <div class="consolidated-stats">
-        <div class="stat-item">
-          <span class="stat-number">+$3.3M</span>
+        <div class="stat-item reveal">
+          <span class="stat-number" data-prefix="+$" data-target="3.3" data-suffix="M">+$0M</span>
           <span class="stat-label">en valor identificado por año</span>
         </div>
-        <div class="stat-item">
-          <span class="stat-number">56+</span>
+        <div class="stat-item reveal">
+          <span class="stat-number" data-target="56" data-suffix="+">0+</span>
           <span class="stat-label">decisiones cerradas con datos</span>
         </div>
-        <div class="stat-item">
-          <span class="stat-number">15+</span>
+        <div class="stat-item reveal">
+          <span class="stat-number" data-target="15" data-suffix="+">0+</span>
           <span class="stat-label">personas con seguimiento activo</span>
         </div>
       </div>
@@ -251,14 +254,14 @@
   <!-- ==================== -->
   <div class="section-alt">
     <div class="about-section">
-      <h2>Piel en el juego</h2>
-      <p>
+      <h2 class="reveal">Piel en el juego</h2>
+      <p class="reveal">
         Cobramos un bono por tu prosperidad. Al inicio del año acordamos 3-5 objetivos medibles con datos del sistema.
       </p>
-      <p>
+      <p class="reveal">
         <span class="highlight">Si al cierre no cumplimos el mínimo, nos vamos automáticamente.</span> Sin comités. Sin negociación. El dato decide.
       </p>
-      <p>Nos va bien cuando a tu empresa le va bien. Si no, nos vamos.</p>
+      <p class="reveal">Nos va bien cuando a tu empresa le va bien. Si no, nos vamos.</p>
     </div>
   </div>
 
@@ -267,7 +270,7 @@
   <!-- ==================== -->
   <div class="section-alt">
     <div class="about-section">
-      <h2>Un principio</h2>
+      <h2 class="reveal">Un principio</h2>
       <div class="principle-container">
         <div class="principle-box" id="principle-box">
           <h3 id="principle-title"></h3>
@@ -287,7 +290,7 @@
   <!-- FOOTER CTA           -->
   <!-- ==================== -->
   <section id="footer-cta">
-    <h2>Empecemos a conversar.</h2>
+    <h2 class="reveal">Empecemos a conversar.</h2>
     <p>
       Si algo de lo que leíste te hizo pensar distinto sobre tu empresa, hablemos. Sin compromiso. El primer paso es una conversación.
     </p>
@@ -559,6 +562,78 @@
         form.innerHTML = '<p style="color: var(--success); padding: 16px;">Listo. Te contactamos pronto.</p>';
       });
     }
+  </script>
+
+  <!-- Visual upgrades: scroll progress, reveal animations, count-up -->
+  <script>
+    // === SCROLL PROGRESS BAR ===
+    const scrollProgressEl = document.getElementById('scroll-progress');
+    window.addEventListener('scroll', () => {
+      const scrollTop = document.documentElement.scrollTop;
+      const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      scrollProgressEl.style.width = ((scrollTop / scrollHeight) * 100) + '%';
+    }, { passive: true });
+
+    // === SCROLL REVEAL (IntersectionObserver) ===
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, {
+      threshold: 0.15,
+      rootMargin: '0px 0px -60px 0px'
+    });
+
+    document.querySelectorAll('.reveal, .reveal-left').forEach(el => revealObserver.observe(el));
+
+    // === COUNT-UP ANIMATION ===
+    function animateCounter(element) {
+      const target = parseFloat(element.dataset.target);
+      const prefix = element.dataset.prefix || '';
+      const suffix = element.dataset.suffix || '';
+      const useComma = element.dataset.format === 'comma';
+      const isDecimal = target % 1 !== 0;
+      const duration = target > 1000 ? 2200 : 1800;
+      const startTime = performance.now();
+
+      const easeOutCubic = t => 1 - Math.pow(1 - t, 3);
+
+      function update(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const easedProgress = easeOutCubic(progress);
+        let current = easedProgress * target;
+
+        if (isDecimal) {
+          current = current.toFixed(1);
+        } else {
+          current = Math.floor(current);
+          if (useComma) current = current.toLocaleString();
+        }
+
+        element.textContent = prefix + current + suffix;
+
+        if (progress < 1) {
+          requestAnimationFrame(update);
+        }
+      }
+
+      requestAnimationFrame(update);
+    }
+
+    const counterObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && entry.target.dataset.target) {
+          animateCounter(entry.target);
+          counterObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.5 });
+
+    document.querySelectorAll('[data-target]').forEach(el => counterObserver.observe(el));
   </script>
 
 </body>
